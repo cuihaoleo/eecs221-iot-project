@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Smart Trashcan</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <h1>Trashcan #{{ device.id }}</h1>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-12">
+        {% if device.history[-1].utilization > 80 %}
+          <div class="alert alert-danger" role="alert">
+            The can is almost full!!!
+          </div>
+        {% endif %}
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-12">
+          <img src="{{img_embed}}" class="rounded mx-auto d-block">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-12">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Time</th>
+                <th scope="col">Utilization</th>
+                <th scope="col">Weight</th>
+                <th scope="col">Image</th>
+                <th scope="col">New Item</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in device.history[::-1] %}
+              <tr>
+                <td>{{ item.timestamp }}</td>
+                <td>{{ item.utilization }} %</td>
+                <td>{{ item.weight }} g</td>
+                <td><img class="img-thumbnail" width="200" src="{{ url_for('main.images', filename=item.image + '.jpg') }}"></img></td>
+                <td>
+                  {% if item.new_item == "Food" %}
+                  <span class="badge badge-danger">
+                  {% elif item.new_item == "Non-Food" %}
+                  <span class="badge badge-success">
+                  {% else %}
+                  <span class="badge badge-secondary">
+                  {% endif %}
+                  {{ item.new_item }}
+                  </span>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  </body>
+</html>
